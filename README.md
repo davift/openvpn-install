@@ -12,12 +12,14 @@ This script will let you set up your own VPN server in no more than a minute, ev
 Run the script and follow the assistant:
 
 ```
-wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
+wget https://raw.githubusercontent.com/davift/openvpn-install/master/openvpn-install.sh -O openvpn-install.sh && bash openvpn-install.sh
 ```
 
 Once it ends, you can run it again to add more users, remove some of them, or even completely uninstall OpenVPN.
 
 ### Automation
 Check out the script `openvpn-cli.sh` for user management with a single command line, easy to integrate into other scripts or with Ansible or Terraform.
+
+If the client name is an email address, `openvpn-cli.sh add` will email the generated `.ovpn` profile via `msmtp`. Set the sender with the `MAIL_FROM` environment variable (defaults to `noreply@<hostname>`).
 
 New: [wireguard-install](https://github.com/Nyr/wireguard-install) is also available.

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # https://github.com/davift/openvpn-install
-# firked from https://github.com/Nyr/openvpn-install
+# forked from https://github.com/Nyr/openvpn-install
 #
 # Released under the same MIT License.
 
@@ -40,14 +40,14 @@ unsanitized_client=$2
 	if [[ -z "$option" || ( "$option" != "add" && "$option" != "revoke" ) ]]; then
 		echo 'Invalid option.'
 	elif [[ -z "$client" ]]; then
-		echo 'The client name cannto be empty.'
+		echo 'The client name cannot be empty.'
 		exit 1
 	fi
 
 case "$option" in
 	add)
 		if [[ -e /etc/openvpn/server/easy-rsa/pki/issued/"$client".crt || -e /etc/openvpn/server/easy-rsa/pki/private/"$client".key ]]; then
-			echo 'The client already exist.'
+			echo 'The client already exists.'
 			exit 1
 		fi
 
@@ -72,35 +72,35 @@ case "$option" in
 			echo "Client's configuration:" /root/"$client.ovpn"
 
 			# Regular expression for a basic email validation
-			regex="^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]{1,2}+\.[a-zA-Z]{2,10}$"
+			regex="^[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z]{2,10}$"
 			if [[ $client =~ $regex ]]; then
-        		boundaystring=($(md5sum /root/$client.ovpn))
+        		boundarystring=($(md5sum /root/$client.ovpn))
 				{
-					echo "From: davift-canada@gmail.com"
+					echo "From: john.doe@gmail.com"
 					echo "To: $client"
 					echo "Subject: OpenVPN Client Configuration"
 					echo "MIME-Version: 1.0"
-					echo "Content-Type: multipart/mixed; boundary=\"$boundaystring\""
+					echo "Content-Type: multipart/mixed; boundary=\"$boundarystring\""
 					echo ""
-					echo "--$boundaystring"
+					echo "--$boundarystring"
 					echo "Content-Type: text/plain; charset=\"UTF-8\""
 					echo "Content-Transfer-Encoding: 7bit"
 					echo ""
 					echo "Please find attached your OpenVPN client configuration."
 					echo ""
-					echo "--$boundaystring"
+					echo "--$boundarystring"
 					echo "Content-Type: application/octet-stream; name=\"$client.ovpn\""
 					echo "Content-Transfer-Encoding: base64"
 					echo "Content-Disposition: attachment; filename=\"$client.ovpn\""
 					echo ""
 					cat /root/$client.ovpn | base64
-					echo "--$boundaystring--"
+					echo "--$boundarystring--"
 					echo ""
 				} > /root/"$client".email
 				if [[ ! $(which msmtp) ]]; then
           			echo 'Email NOT sent! MSMTP was not found.'
 				elif msmtp -a default $client < /root/$client.email; then
-					echo 'Configuration send via email.'
+					echo 'Configuration sent via email.'
         		else
 					echo 'Email NOT sent! MSMTP failed.'
 				fi
